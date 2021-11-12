@@ -8,7 +8,7 @@ var building,b_img;
 var knife,knife2,knife4,knife_img;
 var ball,rope
 box=[];
-
+var edges;
 
 function preload(){
   b_img=loadImage("cities.gif")
@@ -25,16 +25,17 @@ function setup() {
 
 	angleMode(RADIANS)
 	
-	knife= createSprite(900,90)
+	knife= createSprite(800,90)
 	knife.addImage(knife_img)
 	knife.scale=0.1
+	knife.velocityY=Math.round(random(20,30))
 
-	/*knife2= createSprite(900,300)
+	knife2= createSprite(800,300)
 	knife2.addImage(knife_img)
 	knife2.scale=0.1
-	//knife2.velocityY=Math.round(random(20,30))
+    knife2.velocityY=Math.round(random(20,30))
 
-*/
+
 	ball=new Ball(300,480,100,100)
 	rope=new Rope(ball.body,{x:300,y:10})
 	//building=createSprite(1030,450)
@@ -52,7 +53,7 @@ function setup() {
 	for(var i=27;i<35;i++){
 		box[i]=new Box(1240,100,70,70)
 	}
-	
+	edges=createEdgeSprites()
   Engine.run(engine);
 }
 
@@ -74,17 +75,43 @@ for(var i=18;i<26;i++){
 for(var i=27;i<35;i++){
 	box[i].display()
 }
+knife.bounceOff(edges)
+knife2.bounceOff(edges)
+
+if(collide(ball.body,knife)|| collide(ball.body,knife2))
+  {
+    World.remove(world,rope.body)
+  }
+
+
 
 ball.display()
 rope.display()
 //drawSprites(/
 drawSprites();
+
 }
 
 function mouseDragged() {
+ball.body.position.x=mouseX
 	
-//ball.body.position.x=mouse.x
-	
+}
+function collide(body,sprite)
+{
+  if(body!=null)
+        {
+         var d = dist(body.position.x,body.position.y,sprite.position.x,sprite.position.y);
+          if(d<=0.2)
+            {
+				console.log("collided")
+              World.remove(engine.world,rope.body);
+               rope = null;
+               return true; 
+            }
+            else{
+              return false;
+            }
+         }
 }
 
 
